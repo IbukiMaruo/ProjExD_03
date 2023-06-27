@@ -115,7 +115,7 @@ class Beam:
     def __init__(self, bird: Bird):
         self._img = pg.transform.rotozoom(pg.image.load("ex03/fig/beam.png"), 0, 2.0) # 画像surface
         self._rct = self._img.get_rect() # 画像surfaceに対応したrect
-        self._rct.left = bird._rct.right
+        self._rct.left = bird._rct.right 
         self._rct.centery = bird._rct.centery
         self._vx, self._vy = +5, 0
     def update(self, screen: pg.Surface):
@@ -125,12 +125,10 @@ class Beam:
         """
         self._rct.move_ip(self._vx, self._vy)
         screen.blit(self._img, self._rct)
-
-
 class Explosion:
     def __init__(self, bomb: Bomb):
         exp_img = pg.image.load("ex03/fig/explosion.gif")
-        self._imgs = (exp_img,
+        self._imgs = (exp_img, 
                       pg.transform.flip((exp_img), True, False),
                       pg.transform.flip((exp_img), True, True),
                       pg.transform.flip((exp_img), False, True))
@@ -138,24 +136,22 @@ class Explosion:
         self._img = self._imgs[0]
         self._rct = self._img.get_rect()
         self._rct.center = bomb._rct.center
-
     def update(self, screen: pg.surface):
         if self._life != 0:
             screen.blit(self._imgs[self._life % 4], self._rct.center)
             self._life -=1
-
-
-
+        
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     clock = pg.time.Clock()
     bg_img = pg.image.load("ex03/fig/pg_bg.jpg")
-
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     explosions = []
     beam = None
+    score = 0   # 爆弾を破壊した数
+    fonto = pg.font.Font(None, 80)
 
     tmr = 0
     while True:
@@ -166,7 +162,7 @@ def main():
                 beam = Beam(bird)
         tmr += 1
         screen.blit(bg_img, [0, 0])
-       
+        
         for bomb in bombs:
             bomb.update(screen)
             if bird._rct.colliderect(bomb._rct):
@@ -185,14 +181,17 @@ def main():
                     explosions.append(Explosion(bombs[i]))
                     del bombs[i]
                     bird.change_img(6, screen)
+                    score += 1
                     break
-
 
         for explosion in explosions:
             explosion.update(screen)
 
+
+        txt = fonto.render(f"{score}point", True, (255, 255, 255))
+        screen.blit(txt, [1300, 800])
         pg.display.update()
-        clock.tick(100)
+        clock.tick(200)
 
 if __name__ == "__main__":
     pg.init()
