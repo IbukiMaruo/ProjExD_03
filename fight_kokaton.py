@@ -173,16 +173,6 @@ def main():
                 return
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
- 
-        # if beams is not None: #ビームが存在しているとき
-        #     for j, bomb in enumerate(bombs):
-        #         if beam._rct.colliderect(bomb._rct):
-        #             beam = None
-        #             explosions.append(Explosion(bombs[j]))
-        #             del bombs[j]
-        #             bird.change_img(6, screen)
-        #             score += 1
-        #             break
 
         for explosion in explosions:
             explosion.update(screen)
